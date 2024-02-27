@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no,viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>直播</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://hovgood.gitee.io/lg/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://hovgood.gitee.io/lg/static/js/script.js"></script>
+    
+    <style>
+    /* CSS样式 */
+    body {
+      margin: 20px;
+      margin-top: 50px;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      
+      background-color: rgb(0, 0, 0);
+    }
+    
+    .navbar {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.7);  /* 使用 rgba() 函数来设置背景颜色和透明度 */
+      overflow: hidden;
+    }
+    
+    .navbar a {
+      float: left;
+      display: block;
+      color: #f2f2f2;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 16px;
+    }
+    
+    .navbar a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+    
+    .active {
+      background-color: #4CAF50;
+      color: white;
+    }
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .pagination a {
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .pagination a.current {
+            background-color: #ccc;
+        }
+
+        .element-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .element-box {
+            width: calc(50% - 20px);
+        margin-bottom: 20px;
+        text-align: center;
+            
+        }
+        .element-box a:hover {
+            color: red;
+        }
+        .element-box a {
+            display: block;
+        text-align: center;
+        color: white;
+        text-decoration: none;
+        margin-top: 10px; /* 修改标题距离图片的上边距 */
+        }
+
+        .element-box img {
+            display: block;
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 10px;
+    }
+
+    .custom-icon {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+    .custom-icon {
+            font-family: "iconfont" !important;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+           background-image: url("https://hovgood.gitee.io/lg/static/picture/939524f069e668947e0fb57213535464.png");
+            background-repeat: no-repeat;
+            background-size: contain; /* 调整图片的尺寸适应容器 */
+            display: inline-block; /* 保持元素的行内块显示 */
+            width: 50px; /* 调整元素的宽度 */
+            height: 50px; /* 调整元素的高度 */
+            position: absolute; /* 设置绝对定位 */
+            top: 0px; /* 距离顶部的距离 */
+            left: 5px; /* 距离左侧的距离 */
+            z-index: 9; /* 确保图片按钮位于其他内容之上 */
+        }
+
+        .search {
+            margin-left: 60px; /* 调整搜索框的左边距 */
+        }
+
+        .list-nav {
+            display: none;
+        }
+        .custom-icon img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 9999;
+        }
+
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background-color: #000;
+            color: #fff;
+            z-index: 10000;
+            display: none;
+        }
+
+        .popup .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            color: #fff;
+            font-size: 20px;
+        }
+
+        .nav-box {
+            margin-top: 0px;
+        }
+        .nav-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+
+        .nav-box ul li {
+            margin-right: 20px;
+            position: relative;
+        }
+
+        .nav-box ul li:last-child {
+            margin-right: 0;
+        }
+
+        .nav-box ul li a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .nav-box ul li a i {
+            margin-right: 5px;
+        }
+
+        .nav-box ul li .sub-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #fff;
+            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-box ul li:hover .sub-menu {
+            display: block;
+        }
+        .search-box {
+  width: 100%;
+}
+
+.search-txt {
+  max-width: 100%;
+  min-width: 200px;
+}
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <button class="customSearchBtn"> <i class="fas fa-search" onclick="goToSearchPage()"></i></button>
+    
+        <button class="scrollToTopBtn" id="scrollToTopBtn">
+            <i class="fas fa-arrow-up"></i>
+          </button>
+          <a href="https://hovgood.gitee.io/lg/" class="scrollToHome">
+            <button  class="scrollToHome" id="scrollToHome">
+                <i class="fas fa-home"></i>
+              </button></a>
+        <div class="box cf rel">
+            <div class="custom-icon" onclick="showPopup(event)">
+                <img src="https://hovgood.gitee.io/lg/static/picture/939524f069e668947e0fb57213535464.png" alt="菜单">
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="closePopup()"></div>
+    
+<div class="popup" id="popup">
+    <span class="close" onclick="closePopup()">&times;</span>
+    <nav class="nav-box">
+        <ul>
+            <li class="menu-item"><a href="https://hovgood.gitee.io/lg/"><i class="fas fa-home"></i><span class="r6">主页</span></a></li>
+            <li class="menu-item rel">
+                <a href="https://hovgood.gitee.io/lg/quanji.html" class="get">
+                    <span class="r6">全集</span>
+                </a>
+            </li>
+            <li class="menu-item rel">
+                <a href="https://hovgood.gitee.io/lg/xiaomo.html">
+                    <span class="r6">妙见神</span>
+                </a>
+            </li>
+            <li class="menu-item rel">
+                <a href="https://hovgood.gitee.io/lg/zatan.html">
+                    <span class="r6">杂谈</span>
+                </a>
+            </li>
+            <li class="menu-item rel">
+                <a href="https://hovgood.gitee.io/lg/zhibo.html">
+                    <span class="r6">直播</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <div class="search-box">
+                  <i class="fas fa-search search-icon"></i>
+                  <input class="search-txt" type="text" placeholder="搜索" autocomplete="off" onclick="goToSearchPage()">
+                </div>
+               
+              </li>
+              <script>
+                function goToSearchPage() {
+                  window.location.href = "https://hovgood.gitee.io/lg/search.html";
+                }
+              </script>
+
+        </ul>
+    </nav>
+</div>
+
+
+<div class="box">
+    <div id="element-container" class="element-container"></div>
+    <div class="pagination" id="pagination"></div>
+</div>
+
+<script>
+    function showPopup(event) {
+        event.preventDefault();
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("popup").style.display = "block";
+    }
+
+    function closePopup() {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("popup").style.display = "none";
+    }
+</script>
+<script>
+    // 在这里定义600个元素的数据
+    var data = [
+        
+      { url: 'https://mp.weixin.qq.com/s/ol4nFNsvL0w_ye4Mt2AQPQ', title: '【老高直播】在2016年东京电玩展前的Facebook直播测试', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2F9ndpuia1Xib4y736iaAUSTERsPOIhDZEIwU1CmWZ14CtKiabO5oJnqJrWpnD7zs9b8GgOeZAkxeaAITNvib6QrhS9zg%2F0%3Fwx_fmt%3Djpeg&sign=901dfcfc80bf058e35ea02b45ae1d5f7' },
+
+{ url: 'https://mp.weixin.qq.com/s/gjGeGdrWInZniB4rSiIdxA', title: '20200328直播老高与小茉直播合集（厨房篇1）', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAJXxdQTAU3zFIuicx9iar2v0yjKygIh5HKeDBGf3o1pTXGGOG7KeVt69rPwcgwRD1ZufvuNgpITXicQ%2F0%3Fwx_fmt%3Djpeg&sign=921a5d03ae8eaaad037e8ece87fd295c' },
+
+{ url: 'https://mp.weixin.qq.com/s/zPCwkK1iknygqbEu8Y5nuw', title: '老高hy专享直播20200301', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAJXxdQTAU3zFIuicx9iar2v0yjKygIh5HKeDBGf3o1pTXGGOG7KeVt69rPwcgwRD1ZufvuNgpITXicQ%2F0%3Fwx_fmt%3Djpeg&sign=921a5d03ae8eaaad037e8ece87fd295c' },
+
+{ url: 'https://mp.weixin.qq.com/s/bKke9pBJv9RqB62S5n8PwA', title: '老高小茉hy在宾馆直播', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAJXxdQTAU3zFIuicx9iar2v0yjKygIh5HKeDBGf3o1pTXGGOG7KeVt69rPwcgwRD1ZufvuNgpITXicQ%2F0%3Fwx_fmt%3Djpeg&sign=921a5d03ae8eaaad037e8ece87fd295c' },
+{ url: 'https://mp.weixin.qq.com/s/0Lbp1_h0Jmz0Ghg-7UislA', title: '老高与小茉8月8日hy直播', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAJXxdQTAU3zFIuicx9iar2v0yjKygIh5HKeDBGf3o1pTXGGOG7KeVt69rPwcgwRD1ZufvuNgpITXicQ%2F0%3Fwx_fmt%3Djpeg&sign=921a5d03ae8eaaad037e8ece87fd295c' },
+{ url: 'https://mp.weixin.qq.com/s/a_Mk0Q2eCoObpkJhEcjYWw', title: '老高与小茉hy半年直播录像', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAJXxdQTAU3zFIuicx9iar2v0yjKygIh5HKeDBGf3o1pTXGGOG7KeVt69rPwcgwRD1ZufvuNgpITXicQ%2F0%3Fwx_fmt%3Djpeg&sign=921a5d03ae8eaaad037e8ece87fd295c' },
+{ url: 'https://mp.weixin.qq.com/s/O5_VqPVq6m4kNn2kPhp5BA', title: ' 老高与小茉的柯南系列', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAWibDy2egOHRzKIJXvibIDcOpUkRgp1RNtpnnyj9FuceQkGSibVNT9ZYMQlxsY4N0K6p9WiaiawMe2rCw%2F0%3Fwx_fmt%3Djpeg&sign=ace5aa1e5a70d95278c67f5b2a3c9af6' },
+{ url: 'https://mp.weixin.qq.com/s/9w8dZIdv270bIgS3KM7h7w', title: '老高与小茉的直播问答录像', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAJXxdQTAU3zFIuicx9iar2v0yjKygIh5HKeDBGf3o1pTXGGOG7KeVt69rPwcgwRD1ZufvuNgpITXicQ%2F0%3Fwx_fmt%3Djpeg&sign=921a5d03ae8eaaad037e8ece87fd295c' },
+
+{ url: 'https://mp.weixin.qq.com/s/hY4YfIkAxJ6PqTfUSEBb6w', title: '抬头节周边商品贩售，现在开始！。。。。但是，好吧，已经快没了', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAJXxdQTAU3zFIuicx9iar2v0yjKygIh5HKeDBGf3o1pTXGGOG7KeVt69rPwcgwRD1ZufvuNgpITXicQ%2F0%3Fwx_fmt%3Djpeg&sign=921a5d03ae8eaaad037e8ece87fd295c' },
+
+{ url: 'https://mp.weixin.qq.com/s/fe14JfpkfywNFjXURHnsIg', title: '老高的2021年第一次直播', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAJXxdQTAU3zFIuicx9iar2v0yjKygIh5HKeDBGf3o1pTXGGOG7KeVt69rPwcgwRD1ZufvuNgpITXicQ%2F0%3Fwx_fmt%3Djpeg&sign=921a5d03ae8eaaad037e8ece87fd295c' },
+
+{ url: 'https://mp.weixin.qq.com/s/qXeNYBgWsp8w0xC9LRfw2Q', title: '老高与小茉直播合集（2021单人直播配新文化衫）', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAJXxdQTAU3zFIuicx9iar2v0yjKygIh5HKeDBGf3o1pTXGGOG7KeVt69rPwcgwRD1ZufvuNgpITXicQ%2F0%3Fwx_fmt%3Djpeg&sign=921a5d03ae8eaaad037e8ece87fd295c' },
+{ url: 'https://mp.weixin.qq.com/s/733pxgA_tefwAvU2gh3TyA', title: ' 老高与小茉直播合集（厨房篇2）', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAJXxdQTAU3zFIuicx9iar2v0yjKygIh5HKeDBGf3o1pTXGGOG7KeVt69rPwcgwRD1ZufvuNgpITXicQ%2F0%3Fwx_fmt%3Djpeg&sign=921a5d03ae8eaaad037e8ece87fd295c' },
+{ url: 'https://mp.weixin.qq.com/s/L0ZhX7Uukmz77nilxbpzrg', title: '老高与小茉直播合集（秋冬篇）', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAJXxdQTAU3zFIuicx9iar2v0yjKygIh5HKeDBGf3o1pTXGGOG7KeVt69rPwcgwRD1ZufvuNgpITXicQ%2F0%3Fwx_fmt%3Djpeg&sign=921a5d03ae8eaaad037e8ece87fd295c' },
+{ url: 'https://mp.weixin.qq.com/s/y5wpNY9kMPhWebLpo7pLcg', title: '老高与小茉直播合集（包场迪士尼第二篇）', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAJXxdQTAU3zFIuicx9iar2v0yjKygIh5HKeDBGf3o1pTXGGOG7KeVt69rPwcgwRD1ZufvuNgpITXicQ%2F0%3Fwx_fmt%3Djpeg&sign=921a5d03ae8eaaad037e8ece87fd295c' },
+
+{ url: 'https://mp.weixin.qq.com/s/y6jExvayN95nkndWESCzGA', title: '老高与小茉直播合集（变声篇）', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAJXxdQTAU3zFIuicx9iar2v0yjKygIh5HKeDBGf3o1pTXGGOG7KeVt69rPwcgwRD1ZufvuNgpITXicQ%2F0%3Fwx_fmt%3Djpeg&sign=921a5d03ae8eaaad037e8ece87fd295c' },
+
+
+{ url: 'https://mp.weixin.qq.com/s/Zv2tz0tq13YqowAdbzpT6w', title: ' 一年一度的“518”五岁抬头节', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAJXxdQTAU3zFIuicx9iar2v0yjKygIh5HKeDBGf3o1pTXGGOG7KeVt69rPwcgwRD1ZufvuNgpITXicQ%2F0%3Fwx_fmt%3Djpeg&sign=921a5d03ae8eaaad037e8ece87fd295c' },
+
+{ url: 'https://mp.weixin.qq.com/s/59FG0MSg3dhBEtqpE8oTAQ', title: ' 老高直播T恤签名开光丨KUAIZERO删除的直播', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAJXxdQTAU3zFIuicx9iar2v0yjKygIh5HKeDBGf3o1pTXGGOG7KeVt69rPwcgwRD1ZufvuNgpITXicQ%2F0%3Fwx_fmt%3Djpeg&sign=921a5d03ae8eaaad037e8ece87fd295c' },
+
+{ url: 'https://mp.weixin.qq.com/s/4T1kQTdBuDKaXEpBS_Msnw', title: '【皇室战争】早期直播搞笑高光合集1：狂暴都得死！', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FMLWribWK11klGdic8ibe626eWWT6RnibEpQGVDCpgUBQ2frjibtLf2tWRibvicmdvolY2Pe2ibfh3kAbfqBbFkZKqzibQBg%2F0%3Fwx_fmt%3Djpeg&sign=5553985d1c7396746921a736261c4066' },
+{ url: 'https://mp.weixin.qq.com/s/eUHhil_TL92tEQaMltBkUQ', title: '【皇室战争】早期直播搞笑高光合集2：公主带到塔！', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=https%3A%2F%2Fmmbiz.qpic.cn%2Fsz_mmbiz_jpg%2FZmkqALlOWxFIUI5l1dicmCpqKRs4jQqxphZl0j6qt1ecWOafH2O5JgHu7ibKGxXAJKribdnklrzShsQbcKKNy9OqA%2F0%3Fwx_fmt%3Djpeg&sign=49bdaa14ea165140da3a09659a22b3aa' },
+{ url: 'https://mp.weixin.qq.com/s/O2Tz7_XaITU1vtIfDhFXXg', title: '【皇室战争】早期直播搞笑高光合集3：大保健！', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2F7smcUtbXojuHTZl1XAadkgGrmufcib02Z23iaaxQdC1HxVtwQjK1JliaIf8Qia4Lzrk9pehvbH9JgX5kJVTB3TiaNJA%2F0%3Fwx_fmt%3Djpeg&sign=52af6c2b391d5efe59f9a73ea59baef1' },
+
+{ url: 'https://mp.weixin.qq.com/s/Aar1yT2XJqpKNyTlrKBeQw', title: '老高与小茉祝你2022新年快乐！', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAJXxdQTAU3zFIuicx9iar2v0yjKygIh5HKeDBGf3o1pTXGGOG7KeVt69rPwcgwRD1ZufvuNgpITXicQ%2F0%3Fwx_fmt%3Djpeg&sign=921a5d03ae8eaaad037e8ece87fd295c' },
+
+{ url: 'https://mp.weixin.qq.com/s/4UHto81Ue-t0VgMqqAIQ2Q', title: '老高与小茉2022年第一次直播', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAJXxdQTAU3zFIuicx9iar2v0yjKygIh5HKeDBGf3o1pTXGGOG7KeVt69rPwcgwRD1ZufvuNgpITXicQ%2F0%3Fwx_fmt%3Djpeg&sign=921a5d03ae8eaaad037e8ece87fd295c' },
+
+{ url: 'https://mp.weixin.qq.com/s/TsEEbn1ya1LJAO3PMJUXOg', title: '老高小茉5.18会员直播回放', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAJXxdQTAU3zFIuicx9iar2v0yjKygIh5HKeDBGf3o1pTXGGOG7KeVt69rPwcgwRD1ZufvuNgpITXicQ%2F0%3Fwx_fmt%3Djpeg&sign=921a5d03ae8eaaad037e8ece87fd295c' },
+{ url: 'https://mp.weixin.qq.com/s/SuViwim6PrNeaGeAGD-DQg', title: '  老高对欧美的会员Say Hello！直播回放', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAwq0CQEUMKcpQEsy04s1swaVh7XDSXupqNuSiaic15f4Ur0tZnMjFCoGnrqX5iaSaDgJj5mx5QTTptw%2F0%3Fwx_fmt%3Djpeg&sign=3fd5ba3ffc76991043479fcc169366af' },
+
+{ url: 'https://mp.weixin.qq.com/s/ZbBrqAiOHbwWsHYtVVka_g', title: ' 破500万粉丝大喜！直播回答粉丝问题', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oAJXxdQTAU3zFIuicx9iar2v0yjKygIh5HKeDBGf3o1pTXGGOG7KeVt69rPwcgwRD1ZufvuNgpITXicQ%2F0%3Fwx_fmt%3Djpeg&sign=921a5d03ae8eaaad037e8ece87fd295c' },
+
+{ url: 'https://mp.weixin.qq.com/s/pkofIA3ntN9ZJIRVZqpnKw', title: '五周年特别直播&限量周边发售', cover: 'https://img01.sogoucdn.com/v2/thumb?appid=201147&url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz_jpg%2FX2FIQhl87oCg2r2MgiaGODZYhGLnC6szIqE3edJ5VcClAWsHCs2YVqvZVsM1r56g8ABHw2356qIiauo9KPoWJB6Q%2F0%3Fwx_fmt%3Djpeg&sign=fb35c2ecc6d4788de9181e823667f9ed' },
+    ];
+        // 其他元素数
+        
+        var itemsPerPage = 60; // 每页显示的元素数量
+    var totalPages = Math.ceil(data.length / itemsPerPage); // 总页数
+    function loadImagesSequentially(data, index) {
+  if (index >= data.length) {
+    // 所有图片加载完成
+    return;
+  }
+
+  var img = new Image();
+  img.onload = function() {
+    // 图片加载完成后，继续加载下一张图片
+    loadImagesSequentially(data, index + 1);
+  };
+  img.src = data[index].url;
+}
+
+// 从第一张图片开始加载
+loadImagesSequentially(data, 0);
+    // 根据页码获取对应的元素数据
+    function getItemsByPage(page) {
+        var start = (page - 1) * itemsPerPage;
+        var end = start + itemsPerPage;
+        return data.slice(start, end);
+    }
+
+    // 生成元素并添加到页面中
+    function renderItems(page) {
+    var items = getItemsByPage(page);
+    var elementContainer = document.getElementById('element-container');
+    elementContainer.innerHTML = '';
+
+    for (var i = 0; i < items.length; i++) {
+        var div = document.createElement('div');
+        div.className = 'element-box';
+
+        var link = document.createElement('a');
+        link.href = items[i].url;
+
+        var image = document.createElement('img');
+        image.src = items[i].cover;
+
+        link.appendChild(image);
+
+        var title = document.createElement('p');
+        title.textContent = items[i].title;
+
+        link.appendChild(title);
+
+        div.appendChild(link);
+
+        elementContainer.appendChild(div);
+    }
+}
+
+    // 生成分页链接
+    function renderPagination() {
+        var pagination = document.getElementById('pagination');
+        pagination.innerHTML = '';
+
+        for (var i = 1; i <= totalPages; i++) {
+            var link = document.createElement('a');
+            link.href = 'javascript:void(0)';
+            link.textContent = i;
+            link.addEventListener('click', function(page) {
+                return function() {
+                    renderItems(page);
+                    setActivePage(page);
+                };
+            }(i));
+
+            pagination.appendChild(link);
+        }
+    }
+
+    // 设置当前页为活动页
+    function setActivePage(page) {
+        var pagination = document.getElementById('pagination');
+        var links = pagination.getElementsByTagName('a');
+
+        for (var i = 0; i < links.length; i++) {
+            links[i].classList.remove('current');
+        }
+
+        links[page - 1].classList.add('current');
+    }
+
+    // 初始化页面显示
+    function init() {
+        renderItems(1);
+        renderPagination();
+        setActivePage(1);
+    }
+
+    window.onload = init;
+</script>
+<script>
+    window.addEventListener('scroll', function() {
+      var scrollToTopBtn = document.getElementById('scrollToTopBtn');
+    
+      if (window.pageYOffset > 300) {
+        scrollToTopBtn.style.display = 'block';
+      } else {
+        scrollToTopBtn.style.display = 'none';
+      }
+    });
+  
+    document.getElementById('scrollToTopBtn').addEventListener('click', function() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  </script>
+<div class="footer">
+    <button class="customSearchBtn" id="customSearchBtn"> 
+        <i class="fas fa-search" onclick="goToSearchPage()"></i>
+    </button>
+    
+<button class="scrollToTopBtn" id="scrollToTopBtn" style="color: white;">
+        <i class="fas fa-arrow-up"></i>
+      </button>
+      <a href="https://hovgood.gitee.io/lg/">
+        <button  class="scrollToHome" id="scrollToHome">
+            <i class="fas fa-home"></i>
+          </button></a>
+    <div class="box cf">
+        <div class="sit-text">
+            <div class="tim-title"></div>
+            <p>本站所有内容均来自互联网分享，引用资源请勿商用，篡改。</p>
+</body>
+</html>
